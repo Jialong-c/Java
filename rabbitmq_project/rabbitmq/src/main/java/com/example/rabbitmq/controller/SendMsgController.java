@@ -68,4 +68,6 @@ public class SendMsgController {
         log.info(" 当前时间：{}, 发送一条延迟{}毫秒的信息给队列delayed.queue:{}", new Date(),delayTime, message);
         return "success";
     }
+
+
 }
