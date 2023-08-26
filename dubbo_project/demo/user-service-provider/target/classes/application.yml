@@ -7,4 +7,5 @@ dubbo:
     port: 20880
   registry:
     address: 127.0.0.1:2181
+    #指定注册中心协议
     protocol: zookeeper

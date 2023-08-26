@@ -2,14 +2,13 @@ package com.example.consumer.service.impl;
 
 import com.example.userinterface.service.DemoService;
 import org.apache.dubbo.config.annotation.DubboService;
-import org.springframework.stereotype.Component;
 
+@DubboService(version = "2.0")
+public class DemoServiceImpl2 implements DemoService {
 
-//provider实现接口中的服务
-@DubboService(version = "1.0")
-public class DemoServiceImpl implements DemoService {
     @Override
     public String sayHello(String name) {
-        return "Hello " + name;
+        return "Hello " + name+" version:2.0";
     }
+
 }

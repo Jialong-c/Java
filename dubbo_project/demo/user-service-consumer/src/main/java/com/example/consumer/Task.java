@@ -4,13 +4,17 @@ import java.util.Date;
 
 import com.example.userinterface.service.DemoService;
 import org.apache.dubbo.config.annotation.DubboReference;
+import org.apache.dubbo.config.annotation.DubboService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Task implements CommandLineRunner {
-    @DubboReference
+
+    //@DubboReference注解中设置version=2.0可以调用@DubboService(version = "2.0")注解标注的service
+    @DubboReference(version = "2.0")
     private DemoService demoService;
+
 
     @Override
     public void run(String... args) throws Exception {
