@@ -69,6 +69,36 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
     }
 
+    @Override
+    public void subShoppingCart(ShoppingCartDTO shoppingCartDTO) {
+
+        Long userId = BaseContext.getCurrentId();
+        //判断当前数量-1的是菜品还是套餐
+        Long dishId = shoppingCartDTO.getDishId();
+        if (dishId != null) {
+            //查询菜品数量
+            ShoppingCart shoppingCart = shoppingCartMapper.selectDishNumber(dishId, userId);
+            Integer number = shoppingCart.getNumber();
+            if(number==1){
+                shoppingCartMapper.deleteDish(dishId, userId);
+            }else{
+                shoppingCart.setNumber(number-1);
+                shoppingCartMapper.updateNumberById(shoppingCart);
+            }
+        } else {
+            Long setmealId = shoppingCartDTO.getSetmealId();
+            //查询套餐数量
+            ShoppingCart shoppingCart = shoppingCartMapper.selectSetmealNumber(setmealId, userId);
+            Integer number = shoppingCart.getNumber();
+            if(number==1){
+                shoppingCartMapper.deleteSetmeal(setmealId, userId);
+            }else{
+                shoppingCart.setNumber(number-1);
+                shoppingCartMapper.updateNumberById(shoppingCart);
+            }
+        }
+    }
+
     public List<ShoppingCart> showShoppingCart() {
         return shoppingCartMapper.list(ShoppingCart.
                 builder().
@@ -79,4 +109,5 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public void cleanShoppingCart() {
         shoppingCartMapper.deleteByUserId(BaseContext.getCurrentId());
     }
+
 }

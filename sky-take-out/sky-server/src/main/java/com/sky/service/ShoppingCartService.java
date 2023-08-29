@@ -12,4 +12,5 @@ public interface ShoppingCartService {
 
     void cleanShoppingCart();
 
+    void subShoppingCart(ShoppingCartDTO shoppingCartDTO);
 }

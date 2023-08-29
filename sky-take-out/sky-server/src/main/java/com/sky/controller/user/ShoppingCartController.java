@@ -37,6 +37,13 @@ public class ShoppingCartController {
         return Result.success();
     }
 
+    @PostMapping("/sub")
+    public Result<String> sub(@RequestBody ShoppingCartDTO shoppingCartDTO){
+        log.info("添加购物车：{}", shoppingCartDTO);
+        shoppingCartService.subShoppingCart(shoppingCartDTO);
+        return Result.success();
+    }
+
     /**
      * 查看购物车
      * @return
