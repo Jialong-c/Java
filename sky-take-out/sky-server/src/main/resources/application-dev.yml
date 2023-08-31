@@ -1,14 +1,14 @@
 sky:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    host: localhost
-    port: 3306
+    host: 9.tcp.cpolar.top
+    port: 13977
     database: reggie
     username: root
     password: 123456
   redis:
     host: 12.tcp.cpolar.top
-    port: 10275
+    port: 13224
     database: 0
   wechat:
     appid: wx1ff313bc761d8d7b
