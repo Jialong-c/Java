@@ -1,0 +1,20 @@
+server:
+  port: 8001
+
+spring:
+  application:
+    name: cloud-payment-service
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource            # 当前数据源操作类型
+    driver-class-name: com.mysql.cj.jdbc.Driver            # mysql驱动包 com.mysql.jdbc.Driver
+    url: jdbc:mysql://9.tcp.cpolar.top:11849/db2019?serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+mybatis:
+  mapperLocations: classpath:mapper/*.xml
+  type-aliases-package: com.atguigu.springcloud.entity    # 所有Entity别名类所在包
+  configuration:
+    map-underscore-to-camel-case: true
+logging:
+  level:
+    com.atguigu.springcloud.mapper: debug
