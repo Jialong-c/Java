@@ -6,11 +6,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-public class ApplicationContextConfig {
+public class ApplicationContextBean
+{
     @Bean
-    //使用@LoadBalanced注解赋予RestTemplate负载均衡的能力
-    //@LoadBalanced
-    public RestTemplate restTemplate(){
+    @LoadBalanced
+    public RestTemplate getRestTemplate(){
         return new RestTemplate();
     }
 }

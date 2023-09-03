@@ -7,7 +7,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource            # 当前数据源操作类型
     driver-class-name: com.mysql.cj.jdbc.Driver            # mysql驱动包 com.mysql.jdbc.Driver
-    url: jdbc:mysql://11.tcp.cpolar.top:14613/db2019?serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://1.tcp.cpolar.top:10042/db2019?serverTimezone=Asia/Shanghai
     username: root
     password: 123456
 eureka:
