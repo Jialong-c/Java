@@ -6,15 +6,32 @@
         <artifactId>springcloud2020</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <artifactId>cloud-providerconsul-payment8006</artifactId>
-    <name>Archetype - cloud-providerconsul-payment8006</name>
+    <artifactId>cloudalibaba-consumer-nacos-order84</artifactId>
+    <name>Archetype - cloudalibaba-consumer-nacos-order84</name>
     <url>http://maven.apache.org</url>
 
     <dependencies>
-        <!--SpringCloud consul-server -->
+        <!--SpringCloud ailibaba nacos -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <!--SpringCloud ailibaba sentinel -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+        </dependency>
+        <!--SpringCloud openfeign -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <!-- 引入自己定义的api通用包，可以使用Payment支付Entity -->
+        <dependency>
+            <groupId>org.example</groupId>
+            <artifactId>cloud-api-commons</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
         <!-- SpringBoot整合Web组件 -->
         <dependency>
