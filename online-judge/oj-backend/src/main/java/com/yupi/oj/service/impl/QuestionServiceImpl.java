@@ -1,6 +1,8 @@
 package com.yupi.oj.service.impl;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
@@ -8,8 +10,10 @@ import com.yupi.oj.common.ErrorCode;
 import com.yupi.oj.constant.CommonConstant;
 import com.yupi.oj.exception.BusinessException;
 import com.yupi.oj.exception.ThrowUtils;
+import com.yupi.oj.model.dto.question.JudgeConfig;
 import com.yupi.oj.model.dto.question.QuestionQueryRequest;
 import com.yupi.oj.model.entity.*;
+import com.yupi.oj.model.vo.QuestionManageVO;
 import com.yupi.oj.model.vo.QuestionVO;
 import com.yupi.oj.model.vo.UserVO;
 import com.yupi.oj.service.QuestionService;
@@ -19,6 +23,7 @@ import com.yupi.oj.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -156,6 +161,33 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         }).collect(Collectors.toList());
         questionVOPage.setRecords(questionVOList);
         return questionVOPage;
+    }
+
+    @Override
+    public Page<QuestionManageVO> listManageQuestionByPage(Page<Question> questionPage, QueryWrapper<Question> queryWrapper) {
+        this.page(questionPage, queryWrapper);
+        Page<QuestionManageVO> questionManageVoPage = new Page<>();
+        BeanUtils.copyProperties(questionPage, questionManageVoPage, "records");
+        List<Long> userIdList = questionPage.getRecords().stream().map(Question::getUserId).collect(Collectors.toList());
+        List<User> userList = userService.list(
+                Wrappers.lambdaQuery(User.class).select(User::getUserName, User::getId).in(User::getId, userIdList)
+        );
+        Map<Long, List<User>> userIdToName = userList.stream().collect(Collectors.groupingBy(User::getId));
+        questionManageVoPage.setRecords(
+                questionPage.getRecords().stream().map(question -> {
+                    QuestionManageVO questionManageVO = new QuestionManageVO();
+                    BeanUtils.copyProperties(question,questionManageVO);
+                    if (userIdToName.containsKey(question.getUserId())) {
+                        questionManageVO.setUserName(userIdToName.get(question.getUserId()).get(0).getUserName());
+                    }
+                    JudgeConfig judgeConfig = JSONUtil.toBean(question.getJudgeConfig(), JudgeConfig.class);
+                    questionManageVO.setTimeLimit(judgeConfig.getTimeLimit());
+                    questionManageVO.setMemoryLimit(judgeConfig.getMemoryLimit());
+                    questionManageVO.setStackLimit(judgeConfig.getStackLimit());
+                    return questionManageVO;
+                }).collect(Collectors.toList())
+        );
+        return questionManageVoPage;
     }
 }
 

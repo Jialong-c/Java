@@ -81,5 +81,4 @@ public class QuestionSubmitController {
         // 返回脱敏信息
         return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionPage,loginUser));
     }
-
 }

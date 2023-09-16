@@ -6,6 +6,7 @@ import com.yupi.oj.model.dto.question.QuestionQueryRequest;
 import com.yupi.oj.model.entity.Question;
 import com.yupi.oj.model.entity.Question;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.yupi.oj.model.vo.QuestionManageVO;
 import com.yupi.oj.model.vo.QuestionVO;
 import org.springframework.stereotype.Service;
 
@@ -52,4 +53,13 @@ public interface QuestionService extends IService<Question> {
      * @return
      */
     Page<QuestionVO> getQuestionVOPage(Page<Question> questionPage, HttpServletRequest request);
+
+    /**
+     * 管理题目列表页面
+     *
+     * @param questionPage   题目分页
+     * @param queryWrapper 查询条件
+     * @return {@link Page}<{@link QuestionManageVO}>
+     */
+    Page<QuestionManageVO> listManageQuestionByPage(Page<Question> questionPage, QueryWrapper<Question> queryWrapper);
 }

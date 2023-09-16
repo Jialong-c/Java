@@ -20,6 +20,7 @@ import type { QuestionUpdateRequest } from '../models/QuestionUpdateRequest';
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
 import { request as __request } from '../core/request';
+import { CommonResponse_Page_QuestionManageVO_ } from "../models/CommonResponse_Page_QuestionManageVO_";
 
 export class QuestionControllerService {
 
@@ -259,6 +260,28 @@ questionUpdateRequest: QuestionUpdateRequest,
             method: 'POST',
             url: '/api/question/update',
             body: questionUpdateRequest,
+            errors: {
+                401: `Unauthorized`,
+                403: `Forbidden`,
+                404: `Not Found`,
+            },
+        });
+    }
+
+    /**
+     * listManageQuestionByPage
+     * @param questionQueryRequest questionQueryRequest
+     * @returns CommonResponse_Page_QuestionManageVO_ OK
+     * @returns any Created
+     * @throws ApiError
+     */
+    public static listManageQuestionByPageUsingPost(
+      questionQueryRequest: QuestionQueryRequest
+    ): CancelablePromise<CommonResponse_Page_QuestionManageVO_ | any> {
+        return __request(OpenAPI, {
+            method: "POST",
+            url: "/api/question/list/page",
+            body: questionQueryRequest,
             errors: {
                 401: `Unauthorized`,
                 403: `Forbidden`,
