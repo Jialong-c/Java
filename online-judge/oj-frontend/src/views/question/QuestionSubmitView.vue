@@ -17,7 +17,7 @@
         </a-select>
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" @click="doSubmit">搜索</a-button>
+        <a-button type="primary" @click="doSubmit" shape="round">搜索</a-button>
       </a-form-item>
     </a-form>
     <a-divider size="0" />

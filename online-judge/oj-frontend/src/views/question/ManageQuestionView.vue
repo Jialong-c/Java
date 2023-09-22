@@ -25,8 +25,8 @@
         </a-space>
       </template>
       <template #createTime="{ record }">
-        <!--{{ moment(record.createTime).format("YYYY-MM-DD") }}-->
-        {{ record.createTime.split("T")[0] }}
+        {{ moment(record.createTime).format("YYYY-MM-DD") }}
+        <!--{{ record.createTime.split("T")[0] }}-->
       </template>
       <template #optional="{ record }">
         <a-space>
@@ -154,7 +154,7 @@ const columns = [
   },
   {
     title: "创建时间",
-    dataIndex: "createTime",
+    slotName: "createTime",
     width: 170,
   },
   {

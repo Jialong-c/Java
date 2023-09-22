@@ -76,20 +76,32 @@
                 placeholder="请输入测试输出用例"
               />
             </a-form-item>
-            <a-button status="danger" @click="handleDelete(index)">
+            <a-button
+              status="danger"
+              @click="handleDelete(index)"
+              shape="round"
+            >
               删除
             </a-button>
           </a-space>
         </a-form-item>
         <div style="margin-top: 32px">
-          <a-button @click="handleAdd" type="outline" status="success"
+          <a-button
+            @click="handleAdd"
+            type="outline"
+            status="success"
+            shape="round"
             >新增测试用例
           </a-button>
         </div>
       </a-form-item>
       <div style="margin-top: 16px" />
       <a-form-item>
-        <a-button type="primary" style="min-width: 200px" @click="doSubmit"
+        <a-button
+          type="primary"
+          style="min-width: 200px"
+          @click="doSubmit"
+          shape="round"
           >提交
         </a-button>
       </a-form-item>
