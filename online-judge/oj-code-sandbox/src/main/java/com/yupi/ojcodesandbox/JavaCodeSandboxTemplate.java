@@ -19,19 +19,14 @@ import java.util.UUID;
 public abstract class JavaCodeSandboxTemplate implements CodeSandbox {
 
     private static final String GLOBAL_CODE_DIR_NAME = "tmpCode";
-
     private static final String GLOBAL_JAVA_CLASS_NAME = "Main.java";
-
     private static final long TIME_OUT = 5000L;
-
-    private static final Boolean FIRST_INIT = true;
 
     @Override
     public ExecuteCodeResponse executeCode(ExecuteCodeRequest executeCodeRequest) {
 
         List<String> inputList = executeCodeRequest.getInputList();
         String code = executeCodeRequest.getCode();
-        String language = executeCodeRequest.getLanguage();
 
         //1. 把用户的代码保存为文件
         File userCodeFile = saveCodeToFile(code);

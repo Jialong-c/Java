@@ -7,8 +7,6 @@ import com.github.dockerjava.api.command.*;
 import com.github.dockerjava.api.model.*;
 import com.github.dockerjava.core.DockerClientBuilder;
 import com.github.dockerjava.core.command.ExecStartResultCallback;
-import com.yupi.ojcodesandbox.model.ExecuteCodeRequest;
-import com.yupi.ojcodesandbox.model.ExecuteCodeResponse;
 import com.yupi.ojcodesandbox.model.ExecuteMessage;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
@@ -22,7 +20,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class JavaDockerCodeSandbox extends JavaCodeSandboxTemplate{
+public class JavaDockerCodeSandbox extends JavaCodeSandboxTemplate {
 
     private static final long TIME_OUT = 5000L;
 

@@ -13,6 +13,7 @@ import com.yupi.oj.model.dto.question.JudgeCase;
 import com.yupi.oj.judge.codesandbox.model.JudgeInfo;
 import com.yupi.oj.model.entity.Question;
 import com.yupi.oj.model.entity.QuestionSubmit;
+import com.yupi.oj.model.enums.QuestionSubmitLanguageEnum;
 import com.yupi.oj.model.enums.QuestionSubmitStatusEnum;
 import com.yupi.oj.service.QuestionService;
 import com.yupi.oj.service.QuestionSubmitService;
@@ -66,7 +67,7 @@ public class JudgeServiceImpl implements JudgeService {
         // 4）调用沙箱，获取到执行结果
         CodeSandbox codeSandbox = CodeSandboxFactory.newInstance(type);
         codeSandbox = new CodeSandboxProxy(codeSandbox);
-        String language = questionSubmit.getLanguage();
+        QuestionSubmitLanguageEnum language = QuestionSubmitLanguageEnum.getEnumByValue(questionSubmit.getLanguage());
         String code = questionSubmit.getCode();
         // 获取输入用例
         String judgeCaseStr = question.getJudgeCase();

@@ -9,6 +9,7 @@ import com.yupi.ojcodesandbox.model.ExecuteCodeRequest;
 import com.yupi.ojcodesandbox.model.ExecuteCodeResponse;
 import com.yupi.ojcodesandbox.model.ExecuteMessage;
 import com.yupi.ojcodesandbox.model.JudgeInfo;
+import com.yupi.ojcodesandbox.model.enums.QuestionSubmitLanguageEnum;
 import com.yupi.ojcodesandbox.security.DenySecurityManager;
 import com.yupi.ojcodesandbox.utils.ProcessUtils;
 
@@ -51,7 +52,7 @@ public class JavaNativeCodeSandboxOld implements CodeSandbox{
         String code = ResourceUtil.readStr("testCode/unsafeCode/RunFileError.java", StandardCharsets.UTF_8);
 //        String code = ResourceUtil.readStr("testCode/simpleCompute/Main.java", StandardCharsets.UTF_8);
         executeCodeRequest.setCode(code);
-        executeCodeRequest.setLanguage("java");
+        executeCodeRequest.setLanguage(QuestionSubmitLanguageEnum.JAVA);
         ExecuteCodeResponse executeCodeResponse = javaNativeCodeSandboxOld.executeCode(executeCodeRequest);
         System.out.println(executeCodeResponse);
     }
@@ -63,7 +64,6 @@ public class JavaNativeCodeSandboxOld implements CodeSandbox{
 
         List<String> inputList = executeCodeRequest.getInputList();
         String code = executeCodeRequest.getCode();
-        String language = executeCodeRequest.getLanguage();
 
         //  校验代码中是否包含黑名单中的命令
         FoundWord foundWord = WORD_TREE.matchWord(code);

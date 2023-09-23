@@ -1,6 +1,8 @@
 package com.yupi.ojcodesandbox.controller;
 
-import com.yupi.ojcodesandbox.JavaNativeCodeSandbox;
+import com.yupi.ojcodesandbox.CodeSandboxTemplate;
+import com.yupi.ojcodesandbox.JavaNativeCodeSandbox_java;
+import com.yupi.ojcodesandbox.factory.CodeSandboxFactory;
 import com.yupi.ojcodesandbox.model.ExecuteCodeRequest;
 import com.yupi.ojcodesandbox.model.ExecuteCodeResponse;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +23,7 @@ public class MainController {
     private static final String AUTH_REQUEST_SECRET = "secretKey";
 
     @Resource
-    private JavaNativeCodeSandbox javaNativeCodeSandbox;
+    private JavaNativeCodeSandbox_java javaNativeCodeSandbox;
 
     @GetMapping("/health")
     public String healthCheck(){
@@ -45,6 +47,8 @@ public class MainController {
         if (executeCodeRequest == null) {
             throw new RuntimeException("请求参数为空");
         }
-        return javaNativeCodeSandbox.executeCode(executeCodeRequest);
+        CodeSandboxTemplate sandboxTemplate = CodeSandboxFactory.getInstance(executeCodeRequest.getLanguage());
+        ExecuteCodeResponse executeCodeResponse = sandboxTemplate.executeCode(executeCodeRequest);
+        return executeCodeResponse;
     }
 }

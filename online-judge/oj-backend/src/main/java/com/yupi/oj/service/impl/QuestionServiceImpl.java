@@ -1,6 +1,7 @@
 package com.yupi.oj.service.impl;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -18,12 +19,14 @@ import com.yupi.oj.model.vo.QuestionVO;
 import com.yupi.oj.model.vo.UserVO;
 import com.yupi.oj.service.QuestionService;
 import com.yupi.oj.mapper.QuestionMapper;
+import com.yupi.oj.service.QuestionSubmitService;
 import com.yupi.oj.service.UserService;
 import com.yupi.oj.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -43,6 +46,10 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 
     @Resource
     private UserService userService;
+
+    @Resource
+    @Lazy
+    private QuestionSubmitService questionSubmitService;
 
     /**
      * 校验题目是否合法
@@ -157,6 +164,10 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
                 user = userIdUserListMap.get(userId).get(0);
             }
             questionVO.setUserVO(userService.getUserVO(user));
+            questionVO.setSubmitNum((int) questionSubmitService.count());
+            LambdaQueryWrapper<QuestionSubmit> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.like(QuestionSubmit::getJudgeInfo,"Accepted");
+            questionVO.setAcceptedNum((int) questionSubmitService.count(queryWrapper));
             return questionVO;
         }).collect(Collectors.toList());
         questionVOPage.setRecords(questionVOList);

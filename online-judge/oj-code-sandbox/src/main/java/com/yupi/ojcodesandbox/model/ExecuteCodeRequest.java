@@ -1,5 +1,6 @@
 package com.yupi.ojcodesandbox.model;
 
+import com.yupi.ojcodesandbox.model.enums.QuestionSubmitLanguageEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +18,5 @@ public class ExecuteCodeRequest {
 
     private String code;
 
-    private String language;
+    private QuestionSubmitLanguageEnum language;
 }

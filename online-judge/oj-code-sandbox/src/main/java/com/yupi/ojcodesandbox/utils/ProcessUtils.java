@@ -3,6 +3,7 @@ package com.yupi.ojcodesandbox.utils;
 import cn.hutool.core.util.StrUtil;
 
 import com.yupi.ojcodesandbox.model.ExecuteMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.StopWatch;
 
@@ -13,6 +14,7 @@ import java.util.List;
 /**
  * 进程工具类
  */
+@Slf4j
 public class ProcessUtils {
 
     /**
@@ -68,6 +70,7 @@ public class ProcessUtils {
                 while ((errorCompileOutputLine = errorBufferedReader.readLine()) != null) {
                     errorOutputStrList.add(errorCompileOutputLine);
                 }
+                log.error("错误输出为：{}", StringUtils.join(errorOutputStrList, "\n"));
                 executeMessage.setErrorMessage(StringUtils.join(errorOutputStrList, "\n"));
             }
             //MemoryLogger.getInstance().checkMemory();
@@ -87,7 +90,7 @@ public class ProcessUtils {
      * @param args
      * @return
      */
-    public static ExecuteMessage runInteractProcessAndGetMessage(Process runProcess, String args) {
+    public static ExecuteMessage runInteractProcessAndGetMessage(Process runProcess, String args,String opName) {
         ExecuteMessage executeMessage = new ExecuteMessage();
 
         try {
@@ -119,5 +122,61 @@ public class ProcessUtils {
             e.printStackTrace();
         }
         return executeMessage;
+    }
+
+    public static ExecuteMessage handleProcessMessage(Process runProcess, String operationName) {
+        ExecuteMessage executeMessage = new ExecuteMessage();
+
+        int exitCode;
+        StringBuilder output = new StringBuilder();
+        StringBuilder errorOutput = new StringBuilder();
+        try {
+            exitCode = runProcess.waitFor();
+            if (exitCode == 0) {
+                log.info(operationName + "成功");
+            } else {
+                log.error(operationName + "失败，错误码为: {}", exitCode);
+                BufferedReader errorBufferedReader = new BufferedReader(new InputStreamReader(runProcess.getErrorStream()));
+                String errorRunOutputLine;
+                while ((errorRunOutputLine = errorBufferedReader.readLine()) != null) {
+                    errorOutput.append(errorRunOutputLine);
+                }
+                log.error("错误输出为：{}", errorOutput);
+            }
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(runProcess.getInputStream()));
+            String runOutputLine;
+            while ((runOutputLine = bufferedReader.readLine()) != null) {
+                output.append(runOutputLine);
+            }
+            if (StrUtil.isNotBlank(output)) {
+                log.info("正常输出：{}", output);
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        executeMessage.setExitValue(exitCode);
+        executeMessage.setMessage(output.toString());
+        executeMessage.setErrorMessage(errorOutput.toString());
+
+        return executeMessage;
+    }
+
+    public static ExecuteMessage handleProcessInteraction(Process runProcess, String input, String operationName) {
+        OutputStream outputStream = runProcess.getOutputStream();
+        try {
+            outputStream.write((input + "\n").getBytes());
+            outputStream.flush();
+            outputStream.close();
+            return handleProcessMessage(runProcess, operationName);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                log.error("关闭输入流失败");
+            }
+        }
     }
 }

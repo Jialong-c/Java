@@ -7,7 +7,7 @@ public interface JudgeService {
 
     /**
      * 判题
-     * @param questionId
+     * @param questionSubmitId
      * @return
      */
     QuestionSubmit doJudge(long questionSubmitId);

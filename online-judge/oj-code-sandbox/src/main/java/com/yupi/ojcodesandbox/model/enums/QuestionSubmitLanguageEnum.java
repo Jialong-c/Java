@@ -1,22 +1,28 @@
-package com.yupi.oj.model.enums;
+package com.yupi.ojcodesandbox.model.enums;
 
-import org.apache.commons.lang3.ObjectUtils;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 /**
  * 题目提交编程语言枚举
  *
- * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
- * @from <a href="https://yupi.icu">编程导航知识星球</a>
+ * @author 程崎
+ * @since 2023/08/08
  */
+@Getter
 public enum QuestionSubmitLanguageEnum {
 
+    /**
+     * 语言类型
+     */
     JAVA("java", "java"),
-    CPP("cpp", "cpp"),
-    GOLANG("go", "go");
+    CPP("cpp", "cpp");
 
     private final String text;
 
@@ -30,7 +36,7 @@ public enum QuestionSubmitLanguageEnum {
     /**
      * 获取值列表
      *
-     * @return
+     * @return {@link List}<{@link String}>
      */
     public static List<String> getValues() {
         return Arrays.stream(values()).map(item -> item.value).collect(Collectors.toList());
@@ -39,8 +45,8 @@ public enum QuestionSubmitLanguageEnum {
     /**
      * 根据 value 获取枚举
      *
-     * @param value
-     * @return
+     * @param value 值
+     * @return {@link QuestionSubmitLanguageEnum}
      */
     public static QuestionSubmitLanguageEnum getEnumByValue(String value) {
         if (ObjectUtils.isEmpty(value)) {
@@ -54,11 +60,4 @@ public enum QuestionSubmitLanguageEnum {
         return null;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public String getText() {
-        return text;
-    }
 }

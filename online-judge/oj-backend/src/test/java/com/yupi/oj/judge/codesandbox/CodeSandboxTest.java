@@ -24,7 +24,7 @@ class CodeSandboxTest {
     void executeCode() {
         CodeSandbox codeSandbox = new RemoteCodeSandbox();
         String code = "int main() { }";
-        String language = QuestionSubmitLanguageEnum.JAVA.getValue();
+        QuestionSubmitLanguageEnum language = QuestionSubmitLanguageEnum.JAVA;
         List<String> inputList = Arrays.asList("1 2", "3 4");
         ExecuteCodeRequest executeCodeRequest = ExecuteCodeRequest.builder()
                 .code(code)
@@ -39,7 +39,7 @@ class CodeSandboxTest {
     void executeCodeByValue() {
         CodeSandbox codeSandbox = CodeSandboxFactory.newInstance(type);
         String code = "int main() { }";
-        String language = QuestionSubmitLanguageEnum.JAVA.getValue();
+        QuestionSubmitLanguageEnum language = QuestionSubmitLanguageEnum.JAVA;
         List<String> inputList = Arrays.asList("1 2", "3 4");
         ExecuteCodeRequest executeCodeRequest = ExecuteCodeRequest.builder()
                 .code(code)
@@ -61,7 +61,7 @@ class CodeSandboxTest {
                 "        System.out.println(\"结果:\" + (a + b));\n" +
                 "    }\n" +
                 "}";
-        String language = QuestionSubmitLanguageEnum.JAVA.getValue();
+        QuestionSubmitLanguageEnum language = QuestionSubmitLanguageEnum.JAVA;
         List<String> inputList = Arrays.asList("1 2", "3 4");
         ExecuteCodeRequest executeCodeRequest = ExecuteCodeRequest.builder()
                 .code(code)
@@ -79,7 +79,7 @@ class CodeSandboxTest {
             String type = scanner.next();
             CodeSandbox codeSandbox = CodeSandboxFactory.newInstance(type);
             String code = "int main() { }";
-            String language = QuestionSubmitLanguageEnum.JAVA.getValue();
+            QuestionSubmitLanguageEnum language = QuestionSubmitLanguageEnum.JAVA;
             List<String> inputList = Arrays.asList("1 2", "3 4");
             ExecuteCodeRequest executeCodeRequest = ExecuteCodeRequest.builder()
                     .code(code)

@@ -14,6 +14,7 @@ import com.yupi.ojcodesandbox.model.ExecuteCodeRequest;
 import com.yupi.ojcodesandbox.model.ExecuteCodeResponse;
 import com.yupi.ojcodesandbox.model.ExecuteMessage;
 import com.yupi.ojcodesandbox.model.JudgeInfo;
+import com.yupi.ojcodesandbox.model.enums.QuestionSubmitLanguageEnum;
 import com.yupi.ojcodesandbox.utils.ProcessUtils;
 import org.springframework.util.StopWatch;
 
@@ -49,7 +50,7 @@ public class JavaDockerCodeSandboxOld implements CodeSandbox {
 //        String code = ResourceUtil.readStr("testCode/unsafeCode/RunFileError.java", StandardCharsets.UTF_8);
 //        String code = ResourceUtil.readStr("testCode/simpleCompute/Main.java", StandardCharsets.UTF_8);
         executeCodeRequest.setCode(code);
-        executeCodeRequest.setLanguage("java");
+        executeCodeRequest.setLanguage(QuestionSubmitLanguageEnum.JAVA);
         ExecuteCodeResponse executeCodeResponse = javaNativeCodeSandbox.executeCode(executeCodeRequest);
         System.out.println(executeCodeResponse);
     }
@@ -60,7 +61,7 @@ public class JavaDockerCodeSandboxOld implements CodeSandbox {
 
         List<String> inputList = executeCodeRequest.getInputList();
         String code = executeCodeRequest.getCode();
-        String language = executeCodeRequest.getLanguage();
+        QuestionSubmitLanguageEnum language = executeCodeRequest.getLanguage();
 
         //1. 把用户的代码保存为文件
 
