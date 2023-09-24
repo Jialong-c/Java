@@ -8,6 +8,7 @@ import com.yupi.oj.model.vo.LoginUserVO;
 import com.yupi.oj.model.vo.UserVO;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * 用户服务
@@ -32,10 +33,10 @@ public interface UserService extends IService<User> {
      *
      * @param userAccount  用户账户
      * @param userPassword 用户密码
-     * @param request
+     * @param httpSession
      * @return 脱敏后的用户信息
      */
-    LoginUserVO userLogin(String userAccount, String userPassword, HttpServletRequest request);
+    LoginUserVO userLogin(String userAccount, String userPassword, HttpSession httpSession);
 
     /**
      * 用户登录（微信开放平台）
@@ -49,10 +50,10 @@ public interface UserService extends IService<User> {
     /**
      * 获取当前登录用户
      *
-     * @param request
+     * @param httpSession
      * @return
      */
-    User getLoginUser(HttpServletRequest request);
+    User getLoginUser(HttpSession httpSession);
 
     /**
      * 获取当前登录用户（允许未登录）
@@ -60,15 +61,15 @@ public interface UserService extends IService<User> {
      * @param request
      * @return
      */
-    User getLoginUserPermitNull(HttpServletRequest request);
+    User getLoginUserPermitNull(HttpSession httpSession);
 
     /**
      * 是否为管理员
      *
-     * @param request
+     * @param httpSession
      * @return
      */
-    boolean isAdmin(HttpServletRequest request);
+    boolean isAdmin(HttpSession httpSession);
 
     /**
      * 是否为管理员

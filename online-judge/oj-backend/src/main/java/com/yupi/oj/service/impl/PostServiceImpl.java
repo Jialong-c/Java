@@ -30,6 +30,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -231,7 +233,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
     }
 
     @Override
-    public PostVO getPostVO(Post post, HttpServletRequest request) {
+    public PostVO getPostVO(Post post, HttpSession httpSession) {
         PostVO postVO = PostVO.objToVo(post);
         long postId = post.getId();
         // 1. 关联查询用户信息
@@ -243,7 +245,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         UserVO userVO = userService.getUserVO(user);
         postVO.setUser(userVO);
         // 2. 已登录，获取用户点赞、收藏状态
-        User loginUser = userService.getLoginUserPermitNull(request);
+        User loginUser = userService.getLoginUserPermitNull(httpSession);
         if (loginUser != null) {
             // 获取点赞
             QueryWrapper<PostThumb> postThumbQueryWrapper = new QueryWrapper<>();
@@ -262,7 +264,7 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
     }
 
     @Override
-    public Page<PostVO> getPostVOPage(Page<Post> postPage, HttpServletRequest request) {
+    public Page<PostVO> getPostVOPage(Page<Post> postPage, HttpSession httpSession) {
         List<Post> postList = postPage.getRecords();
         Page<PostVO> postVOPage = new Page<>(postPage.getCurrent(), postPage.getSize(), postPage.getTotal());
         if (CollectionUtils.isEmpty(postList)) {
@@ -275,10 +277,10 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         // 2. 已登录，获取用户点赞、收藏状态
         Map<Long, Boolean> postIdHasThumbMap = new HashMap<>();
         Map<Long, Boolean> postIdHasFavourMap = new HashMap<>();
-        User loginUser = userService.getLoginUserPermitNull(request);
+        User loginUser = userService.getLoginUserPermitNull(httpSession);
         if (loginUser != null) {
             Set<Long> postIdSet = postList.stream().map(Post::getId).collect(Collectors.toSet());
-            loginUser = userService.getLoginUser(request);
+            loginUser = userService.getLoginUser(httpSession);
             // 获取点赞
             QueryWrapper<PostThumb> postThumbQueryWrapper = new QueryWrapper<>();
             postThumbQueryWrapper.in("postId", postIdSet);

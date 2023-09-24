@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -52,11 +53,11 @@ public class QuestionController {
      * 创建
      *
      * @param questionAddRequest
-     * @param request
+     * @param httpSession
      * @return
      */
     @PostMapping("/add")
-    public BaseResponse<Long> addQuestion(@RequestBody QuestionAddRequest questionAddRequest, HttpServletRequest request) {
+    public BaseResponse<Long> addQuestion(@RequestBody QuestionAddRequest questionAddRequest, HttpSession httpSession) {
         if (questionAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -75,7 +76,7 @@ public class QuestionController {
             question.setJudgeConfig(GSON.toJson(judgeConfig));
         }
         questionService.validQuestion(question, true);
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userService.getLoginUser(httpSession);
         question.setUserId(loginUser.getId());
         question.setFavourNum(0);
         question.setThumbNum(0);
@@ -93,7 +94,7 @@ public class QuestionController {
      * @return
      */
     @PostMapping("/delete")
-    public BaseResponse<Boolean> deleteQuestion(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
+    public BaseResponse<Boolean> deleteQuestion(@RequestBody DeleteRequest deleteRequest, HttpSession request) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -153,7 +154,7 @@ public class QuestionController {
      * @return
      */
     @GetMapping("/get")
-    public BaseResponse<Question> getQuestionById(long id, HttpServletRequest request) {
+    public BaseResponse<Question> getQuestionById(long id, HttpSession request) {
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -176,7 +177,7 @@ public class QuestionController {
      * @return
      */
     @GetMapping("/get/vo")
-    public BaseResponse<QuestionVO> getQuestionVOById(long id, HttpServletRequest request) {
+    public BaseResponse<QuestionVO> getQuestionVOById(long id, HttpSession request) {
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -184,7 +185,7 @@ public class QuestionController {
         if (question == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
-        return ResultUtils.success(questionService.getQuestionVO(question, request));
+        return ResultUtils.success(questionService.getQuestionVO(question));
     }
 
     /**
@@ -196,30 +197,30 @@ public class QuestionController {
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<QuestionVO>> listQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
-            HttpServletRequest request) {
+            HttpSession request) {
         long current = questionQueryRequest.getCurrent();
         long size = questionQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         Page<Question> questionPage = questionService.page(new Page<>(current, size),
                 questionService.getQueryWrapper(questionQueryRequest));
-        return ResultUtils.success(questionService.getQuestionVOPage(questionPage, request));
+        return ResultUtils.success(questionService.getQuestionVOPage(questionPage));
     }
 
     /**
      * 分页获取当前用户创建的资源列表
      *
      * @param questionQueryRequest
-     * @param request
+     * @param httpSession
      * @return
      */
     @PostMapping("/my/list/page/vo")
     public BaseResponse<Page<QuestionVO>> listMyQuestionVOByPage(@RequestBody QuestionQueryRequest questionQueryRequest,
-            HttpServletRequest request) {
+            HttpSession httpSession) {
         if (questionQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userService.getLoginUser(httpSession);
         questionQueryRequest.setUserId(loginUser.getId());
         long current = questionQueryRequest.getCurrent();
         long size = questionQueryRequest.getPageSize();
@@ -227,7 +228,7 @@ public class QuestionController {
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         Page<Question> questionPage = questionService.page(new Page<>(current, size),
                 questionService.getQueryWrapper(questionQueryRequest));
-        return ResultUtils.success(questionService.getQuestionVOPage(questionPage, request));
+        return ResultUtils.success(questionService.getQuestionVOPage(questionPage));
     }
 
     /**
@@ -252,11 +253,11 @@ public class QuestionController {
      * 编辑（用户）
      *
      * @param questionEditRequest
-     * @param request
+     * @param httpSession
      * @return
      */
     @PostMapping("/edit")
-    public BaseResponse<Boolean> editQuestion(@RequestBody QuestionEditRequest questionEditRequest, HttpServletRequest request) {
+    public BaseResponse<Boolean> editQuestion(@RequestBody QuestionEditRequest questionEditRequest, HttpSession httpSession) {
         if (questionEditRequest == null || questionEditRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -276,7 +277,7 @@ public class QuestionController {
         }
         // 参数校验
         questionService.validQuestion(question, false);
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userService.getLoginUser(httpSession);
         long id = questionEditRequest.getId();
         // 判断是否存在
         Question oldQuestion = questionService.getById(id);
@@ -293,17 +294,17 @@ public class QuestionController {
      * 提交题目
      *
      * @param questionSubmitAddRequest
-     * @param request
+     * @param httpSession
      * @return 提交记录的 id
      */
     @PostMapping("/question_submit/do")
     public BaseResponse<Long> doQuestionSubmit(@RequestBody QuestionSubmitAddRequest questionSubmitAddRequest,
-                                               HttpServletRequest request) {
+                                               HttpSession httpSession) {
         if (questionSubmitAddRequest == null || questionSubmitAddRequest.getQuestionId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
 
-        final User loginUser = userService.getLoginUser(request);
+        final User loginUser = userService.getLoginUser(httpSession);
         long questionSubmitId = questionSubmitService.doQuestionSubmit(questionSubmitAddRequest, loginUser);
         return ResultUtils.success(questionSubmitId);
     }
@@ -312,18 +313,18 @@ public class QuestionController {
      * 分页获取题目提交列表（除了管理员外，普通用户只能看到非答案、提交代码等公开信息）
      *
      * @param questionSubmitQueryRequest
-     * @param request
+     * @param httpSession
      * @return
      */
     @PostMapping("/question_submit/list/page")
     public BaseResponse<Page<QuestionSubmitVO>> listQuestionSubmitByPage(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest,
-                                                                         HttpServletRequest request) {
+                                                                         HttpSession httpSession) {
         long current = questionSubmitQueryRequest.getCurrent();
         long size = questionSubmitQueryRequest.getPageSize();
         // 从数据库中查询原始的题目提交分页信息
         Page<QuestionSubmit> questionSubmitPage = questionSubmitService.page(new Page<>(current, size),
                 questionSubmitService.getQueryWrapper(questionSubmitQueryRequest));
-        final User loginUser = userService.getLoginUser(request);
+        final User loginUser = userService.getLoginUser(httpSession);
         // 返回脱敏信息
         return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionSubmitPage, loginUser));
     }

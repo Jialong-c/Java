@@ -130,7 +130,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     }
 
     @Override
-    public QuestionVO getQuestionVO(Question question, HttpServletRequest request) {
+    public QuestionVO getQuestionVO(Question question) {
         QuestionVO questionVO = QuestionVO.objToVo(question);
         long questionId = question.getId();
         // 1. 关联查询用户信息
@@ -145,7 +145,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     }
 
     @Override
-    public Page<QuestionVO> getQuestionVOPage(Page<Question> questionPage, HttpServletRequest request) {
+    public Page<QuestionVO> getQuestionVOPage(Page<Question> questionPage) {
         List<Question> questionList = questionPage.getRecords();
         Page<QuestionVO> questionVOPage = new Page<>(questionPage.getCurrent(), questionPage.getSize(), questionPage.getTotal());
         if (CollectionUtils.isEmpty(questionList)) {

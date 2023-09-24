@@ -22,6 +22,8 @@ import com.yupi.oj.service.UserService;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,11 +57,11 @@ public class PostController {
      * 创建
      *
      * @param postAddRequest
-     * @param request
+     * @param httpSession
      * @return
      */
     @PostMapping("/add")
-    public BaseResponse<Long> addPost(@RequestBody PostAddRequest postAddRequest, HttpServletRequest request) {
+    public BaseResponse<Long> addPost(@RequestBody PostAddRequest postAddRequest, HttpSession httpSession) {
         if (postAddRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -70,7 +72,7 @@ public class PostController {
             post.setTags(GSON.toJson(tags));
         }
         postService.validPost(post, true);
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userService.getLoginUser(httpSession);
         post.setUserId(loginUser.getId());
         post.setFavourNum(0);
         post.setThumbNum(0);
@@ -84,21 +86,21 @@ public class PostController {
      * 删除
      *
      * @param deleteRequest
-     * @param request
+     * @param httpSession
      * @return
      */
     @PostMapping("/delete")
-    public BaseResponse<Boolean> deletePost(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
+    public BaseResponse<Boolean> deletePost(@RequestBody DeleteRequest deleteRequest, HttpSession httpSession) {
         if (deleteRequest == null || deleteRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User user = userService.getLoginUser(request);
+        User user = userService.getLoginUser(httpSession);
         long id = deleteRequest.getId();
         // 判断是否存在
         Post oldPost = postService.getById(id);
         ThrowUtils.throwIf(oldPost == null, ErrorCode.NOT_FOUND_ERROR);
         // 仅本人或管理员可删除
-        if (!oldPost.getUserId().equals(user.getId()) && !userService.isAdmin(request)) {
+        if (!oldPost.getUserId().equals(user.getId()) && !userService.isAdmin(httpSession)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         boolean b = postService.removeById(id);
@@ -140,7 +142,7 @@ public class PostController {
      * @return
      */
     @GetMapping("/get/vo")
-    public BaseResponse<PostVO> getPostVOById(long id, HttpServletRequest request) {
+    public BaseResponse<PostVO> getPostVOById(long id, HttpSession httpSession) {
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -148,42 +150,42 @@ public class PostController {
         if (post == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
-        return ResultUtils.success(postService.getPostVO(post, request));
+        return ResultUtils.success(postService.getPostVO(post, httpSession));
     }
 
     /**
      * 分页获取列表（封装类）
      *
      * @param postQueryRequest
-     * @param request
+     * @param httpSession
      * @return
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<PostVO>> listPostVOByPage(@RequestBody PostQueryRequest postQueryRequest,
-            HttpServletRequest request) {
+            HttpSession httpSession) {
         long current = postQueryRequest.getCurrent();
         long size = postQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         Page<Post> postPage = postService.page(new Page<>(current, size),
                 postService.getQueryWrapper(postQueryRequest));
-        return ResultUtils.success(postService.getPostVOPage(postPage, request));
+        return ResultUtils.success(postService.getPostVOPage(postPage, httpSession));
     }
 
     /**
      * 分页获取当前用户创建的资源列表
      *
      * @param postQueryRequest
-     * @param request
+     * @param httpSession
      * @return
      */
     @PostMapping("/my/list/page/vo")
     public BaseResponse<Page<PostVO>> listMyPostVOByPage(@RequestBody PostQueryRequest postQueryRequest,
-            HttpServletRequest request) {
+            HttpSession httpSession) {
         if (postQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userService.getLoginUser(httpSession);
         postQueryRequest.setUserId(loginUser.getId());
         long current = postQueryRequest.getCurrent();
         long size = postQueryRequest.getPageSize();
@@ -191,7 +193,7 @@ public class PostController {
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         Page<Post> postPage = postService.page(new Page<>(current, size),
                 postService.getQueryWrapper(postQueryRequest));
-        return ResultUtils.success(postService.getPostVOPage(postPage, request));
+        return ResultUtils.success(postService.getPostVOPage(postPage, httpSession));
     }
 
     // endregion
@@ -200,28 +202,28 @@ public class PostController {
      * 分页搜索（从 ES 查询，封装类）
      *
      * @param postQueryRequest
-     * @param request
+     * @param httpSession
      * @return
      */
     @PostMapping("/search/page/vo")
     public BaseResponse<Page<PostVO>> searchPostVOByPage(@RequestBody PostQueryRequest postQueryRequest,
-            HttpServletRequest request) {
+            HttpSession httpSession) {
         long size = postQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         Page<Post> postPage = postService.searchFromEs(postQueryRequest);
-        return ResultUtils.success(postService.getPostVOPage(postPage, request));
+        return ResultUtils.success(postService.getPostVOPage(postPage, httpSession));
     }
 
     /**
      * 编辑（用户）
      *
      * @param postEditRequest
-     * @param request
+     * @param httpSession
      * @return
      */
     @PostMapping("/edit")
-    public BaseResponse<Boolean> editPost(@RequestBody PostEditRequest postEditRequest, HttpServletRequest request) {
+    public BaseResponse<Boolean> editPost(@RequestBody PostEditRequest postEditRequest, HttpSession httpSession) {
         if (postEditRequest == null || postEditRequest.getId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -233,7 +235,7 @@ public class PostController {
         }
         // 参数校验
         postService.validPost(post, false);
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userService.getLoginUser(httpSession);
         long id = postEditRequest.getId();
         // 判断是否存在
         Post oldPost = postService.getById(id);

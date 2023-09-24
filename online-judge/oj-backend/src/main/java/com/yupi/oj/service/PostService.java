@@ -7,6 +7,7 @@ import com.yupi.oj.model.dto.post.PostQueryRequest;
 import com.yupi.oj.model.entity.Post;
 import com.yupi.oj.model.vo.PostVO;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * 帖子服务
@@ -47,14 +48,14 @@ public interface PostService extends IService<Post> {
      * @param request
      * @return
      */
-    PostVO getPostVO(Post post, HttpServletRequest request);
+    PostVO getPostVO(Post post, HttpSession httpSession);
 
     /**
      * 分页获取帖子封装
      *
      * @param postPage
-     * @param request
+     * @param httpSession
      * @return
      */
-    Page<PostVO> getPostVOPage(Page<Post> postPage, HttpServletRequest request);
+    Page<PostVO> getPostVOPage(Page<Post> postPage, HttpSession httpSession);
 }

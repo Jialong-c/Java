@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * 题目提交接口
@@ -46,17 +47,17 @@ public class QuestionSubmitController {
      * 提交题目
      *
      * @param questionSubmitAddRequest
-     * @param request
+     * @param httpSession
      * @return 提交记录的Id
      */
     @PostMapping("/")
     public BaseResponse<Long> doQuestionSubmit(@RequestBody QuestionSubmitAddRequest questionSubmitAddRequest,
-            HttpServletRequest request) {
+            HttpSession httpSession) {
         if (questionSubmitAddRequest == null || questionSubmitAddRequest.getQuestionId() <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         // 登录才能点赞
-        final User loginUser = userService.getLoginUser(request);
+        final User loginUser = userService.getLoginUser(httpSession);
         Long questionSubmitId = questionSubmitService.doQuestionSubmit(questionSubmitAddRequest, loginUser);
         return ResultUtils.success(questionSubmitId);
     }
@@ -65,19 +66,19 @@ public class QuestionSubmitController {
      * 分页获取题目提交列表（除了管理员外，普通用户只能看到非答案、提交代码等公开信息）
      *
      * @param questionSubmitQueryRequest
-     * @param request
+     * @param httpSession
      * @return
      */
     @PostMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Page<QuestionSubmitVO>> listQuestionByPage(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest,
-                                                                   HttpServletRequest request) {
+                                                                   HttpSession httpSession) {
         long current = questionSubmitQueryRequest.getCurrent();
         long size = questionSubmitQueryRequest.getPageSize();
         // 从数据库中查询原始的题目提交分页信息
         Page<QuestionSubmit> questionPage = questionSubmitService.page(new Page<>(current, size),
                 questionSubmitService.getQueryWrapper(questionSubmitQueryRequest));
-        final User loginUser = userService.getLoginUser(request);
+        final User loginUser = userService.getLoginUser(httpSession);
         // 返回脱敏信息
         return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionPage,loginUser));
     }

@@ -18,7 +18,7 @@ spring:
   # todo 需替换配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://18.tcp.cpolar.top:11109/yuoj?serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://17.tcp.cpolar.top:10104/yuoj?serverTimezone=Asia/Shanghai
     username: root
     password: 123456
   # Redis 配置
@@ -26,7 +26,7 @@ spring:
   redis:
     database: 1
     host: 19.tcp.cpolar.top
-    port: 13268
+    port: 11218
     timeout: 5000
   #    password: 123456
   # Elasticsearch 配置
@@ -48,7 +48,8 @@ server:
     # cookie 30 天过期
     session:
       cookie:
-        max-age: 2592000
+        max-age: 86400
+        path: /api
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false

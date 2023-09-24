@@ -23,6 +23,8 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -77,11 +79,11 @@ public class UserController {
      * 用户登录
      *
      * @param userLoginRequest
-     * @param request
+     * @param httpSession
      * @return
      */
     @PostMapping("/login")
-    public BaseResponse<LoginUserVO> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
+    public BaseResponse<LoginUserVO> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpSession httpSession) {
         if (userLoginRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -90,7 +92,7 @@ public class UserController {
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        LoginUserVO loginUserVO = userService.userLogin(userAccount, userPassword, request);
+        LoginUserVO loginUserVO = userService.userLogin(userAccount, userPassword, httpSession);
         return ResultUtils.success(loginUserVO);
     }
 
@@ -135,12 +137,12 @@ public class UserController {
     /**
      * 获取当前登录用户
      *
-     * @param request
+     * @param httpSession
      * @return
      */
     @GetMapping("/get/login")
-    public BaseResponse<LoginUserVO> getLoginUser(HttpServletRequest request) {
-        User user = userService.getLoginUser(request);
+    public BaseResponse<LoginUserVO> getLoginUser(HttpSession httpSession) {
+        User user = userService.getLoginUser(httpSession);
         return ResultUtils.success(userService.getLoginUserVO(user));
     }
 
@@ -287,16 +289,16 @@ public class UserController {
      * 更新个人信息
      *
      * @param userUpdateMyRequest
-     * @param request
+     * @param httpSession
      * @return
      */
     @PostMapping("/update/my")
     public BaseResponse<Boolean> updateMyUser(@RequestBody UserUpdateMyRequest userUpdateMyRequest,
-            HttpServletRequest request) {
+            HttpSession httpSession) {
         if (userUpdateMyRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        User loginUser = userService.getLoginUser(request);
+        User loginUser = userService.getLoginUser(httpSession);
         User user = new User();
         BeanUtils.copyProperties(userUpdateMyRequest, user);
         user.setId(loginUser.getId());

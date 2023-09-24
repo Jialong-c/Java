@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -80,7 +82,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public LoginUserVO userLogin(String userAccount, String userPassword, HttpServletRequest request) {
+    public LoginUserVO userLogin(String userAccount, String userPassword, HttpSession httpSession) {
         // 1. 校验
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
@@ -104,7 +106,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户不存在或密码错误");
         }
         // 3. 记录用户的登录态
-        request.getSession().setAttribute(USER_LOGIN_STATE, user);
+        httpSession.setAttribute(USER_LOGIN_STATE, user);
         return this.getLoginUserVO(user);
     }
 
@@ -143,13 +145,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 获取当前登录用户
      *
-     * @param request
+     * @param httpSession
      * @return
      */
     @Override
-    public User getLoginUser(HttpServletRequest request) {
+    public User getLoginUser(HttpSession httpSession) {
         // 先判断是否已登录
-        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        Object userObj = httpSession.getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
         if (currentUser == null || currentUser.getId() == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
@@ -166,13 +168,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 获取当前登录用户（允许未登录）
      *
-     * @param request
+     * @param httpSession
      * @return
      */
     @Override
-    public User getLoginUserPermitNull(HttpServletRequest request) {
+    public User getLoginUserPermitNull(HttpSession httpSession) {
         // 先判断是否已登录
-        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        Object userObj = httpSession.getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
         if (currentUser == null || currentUser.getId() == null) {
             return null;
@@ -185,13 +187,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 是否为管理员
      *
-     * @param request
+     * @param httpSession
      * @return
      */
     @Override
-    public boolean isAdmin(HttpServletRequest request) {
+    public boolean isAdmin(HttpSession httpSession) {
         // 仅管理员可查询
-        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        Object userObj = httpSession.getAttribute(USER_LOGIN_STATE);
         User user = (User) userObj;
         return isAdmin(user);
     }
