@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>事件修饰符</title>
+    <!--引入Vue-->
+    <script type="text/javascript" src="../js/vue.js"></script>
+    <style>
+        *{
+            margin-top: 20px;
+        }
+        .demo1{
+            height: 100px;
+            background-color: skyblue;
+        }
+        .box1{
+            padding: 5px;
+            background-color: skyblue;
+        }
+        .box2{
+            padding: 5px;
+            background-color: orange;
+        }
+        .list{
+            width: 200px;
+            height: 200px;
+            background-color: aqua;
+            overflow: auto;
+        }
+        li{
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <!--
+       Vue中的事件修饰符：
+           1.prevent：阻止默认事件（常用）；
+           2.stop：阻止事件冒泡（常用）；
+           3.once：事件只触发一次（常用）；
+           4.capture：使用事件的捕获模式；
+           5.self：只有event.target是当前操作的元素时才触发事件；
+           6.passive：事件的默认行为立即执行，无需等待事件回调执行完毕；
+   -->
+    <div id="root">
+        <h2>欢迎来到{{name}}学习</h2>
+        <!--prevent：阻止默认事件（常用）-->
+        <button @click.prevent="showInfo">点我提示信息</button>
+
+        <!--stop：阻止事件冒泡（常用）-->
+        <div class="demo1" @click="showInfo">
+            <button @click.stop="showInfo">点我提示信息</button>
+        </div>
+
+        <!--once：事件只触发一次（常用）-->
+        <button @click.once="showInfo">点我提示信息</button>
+
+        <!--capture：使用事件的捕获模式-->
+        <!--默认先事件捕获（由外往内，div1->div2），后事件冒泡（由内往外），冒泡处理事件，控制台输出 2 1-->
+        <!--开启捕获模式，在捕获阶段处理事件，控制台输出1 2-->
+        <div class="box1" @click.capture="showMsg(1)">
+            div1
+            <div class="box2" @click="showMsg(2)">
+                div2
+            </div>
+        </div>
+
+        <!--self：只有event.target是当前操作的元素时才触发事件-->
+        <div class="demo1" @click.self="showInfo">
+            <button @click="showInfo">点我提示信息</button>
+        </div>
+
+        <!--passive：事件的默认行为立即执行，无需等待事件回调执行完毕-->
+        <!--滚动条绑定滚动事件 @scroll滚动条变化触发事件  @wheel鼠标滚动触发事件-->
+        <!--passive实现滚动条滚动，再开始计数，否则循环结束滚动条才滚动-->
+        <ul @wheel.passive="demo" class="list">
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+        </ul>
+    </div>
+
+    <script type="text/javascript">
+        Vue.config.productionTip=false
+
+        new Vue({
+            el:'#root',
+            data:{
+                name:'尚硅谷'
+            },
+            methods:{
+                showInfo(event){
+                    //event.preventDefault()
+                    //event.stopPropagation()
+                    //console.log(event.target)
+                    alert('hello')
+                },
+                showMsg(msg){
+                    console.log(msg)
+                },
+                demo(){
+                    for(let i=0;i<100000;i++){
+                        console.log('#')
+                    }
+                }
+            }
+        })
+    </script>
+</body>
+</html>
