@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>姓名案例_methods实现</title>
+    <!--引入Vue-->
+    <script type="text/javascript" src="../js/vue.js"></script>
+</head>
+<body>
+<div id="root">
+    姓：<input type="text" v-model="firstName"><br/>
+    名：<input type="text" v-model="lastName"><br/>
+    <!--data中的数据发生变化，Vue模板会重新解析-->
+    全名：<span>{{fullName()}}</span>
+</div>
+
+<script type="text/javascript">
+    Vue.config.productionTip=false
+
+    new Vue({
+        el:'#root',
+        data:{
+            firstName:'张',
+            lastName:'三'
+        },
+        methods:{
+            fullName(){
+                console.log('@---fullName')
+                return this.firstName+'-'+this.lastName
+            }
+        }
+    })
+</script>
+</body>
+</html>
