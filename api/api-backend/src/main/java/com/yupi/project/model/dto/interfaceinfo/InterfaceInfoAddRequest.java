@@ -1,21 +1,17 @@
-package com.yupi.project.model.dto.interfaceInfo;
+package com.yupi.project.model.dto.interfaceinfo;
 
 import lombok.Data;
 
 import java.io.Serializable;
 
 /**
- * 更新请求
+ * 接口创建请求
  *
- * @TableName product
+ * @author <a href="https://github.com/liyupi">程序员鱼皮</a>
+ * @from <a href="https://yupi.icu">编程导航知识星球</a>
  */
 @Data
-public class InterfaceInfoUpdateRequest implements Serializable {
-
-    /**
-     * 主键
-     */
-    private Long id;
+public class InterfaceInfoAddRequest implements Serializable {
 
     /**
      * 名称
@@ -33,6 +29,11 @@ public class InterfaceInfoUpdateRequest implements Serializable {
     private String url;
 
     /**
+     * 请求参数
+     */
+    private String requestParams;
+
+    /**
      * 请求头
      */
     private String requestHeader;
@@ -43,14 +44,8 @@ public class InterfaceInfoUpdateRequest implements Serializable {
     private String responseHeader;
 
     /**
-     * 接口状态（0-关闭，1-开启）
-     */
-    private Integer status;
-
-    /**
      * 请求类型
      */
     private String method;
 
-    private static final long serialVersionUID = 1L;
 }
