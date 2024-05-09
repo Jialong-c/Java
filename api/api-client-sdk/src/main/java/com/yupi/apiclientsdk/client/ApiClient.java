@@ -7,6 +7,8 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONUtil;
 import com.yupi.apiclientsdk.model.User;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,8 +54,13 @@ public class ApiClient {
         //hashMap.put("secretKey", secretKey);
         // 生成随机数(生成一个包含4个随机数字的字符串)
         hashMap.put("nonce", RandomUtil.randomNumbers(4));
-        // 请求体内容
-        hashMap.put("body", body);
+        // 请求体内容，解决中文乱码问题
+        //hashMap.put("body", body);
+        try {
+            hashMap.put("body", URLEncoder.encode(body,"utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
         // 当前时间戳
         // System.currentTimeMillis()返回当前时间的毫秒数。通过除以1000，可以将毫秒数转换为秒数，以得到当前时间戳的秒级表示
         hashMap.put("timestamp", String.valueOf(System.currentTimeMillis() / 1000));
