@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
 import com.yupi.apiclientsdk.client.ApiClient;
+import com.yupi.apicommon.model.entity.InterfaceInfo;
+import com.yupi.apicommon.model.entity.User;
 import com.yupi.project.annotation.AuthCheck;
 import com.yupi.project.common.*;
 import com.yupi.project.constant.CommonConstant;
@@ -12,8 +14,6 @@ import com.yupi.project.model.dto.interfaceinfo.InterfaceInfoAddRequest;
 import com.yupi.project.model.dto.interfaceinfo.InterfaceInfoInvokeRequest;
 import com.yupi.project.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import com.yupi.project.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
-import com.yupi.project.model.entity.InterfaceInfo;
-import com.yupi.project.model.entity.User;
 import com.yupi.project.model.enums.InterfaceInfoStatusEnum;
 import com.yupi.project.service.InterfaceInfoService;
 import com.yupi.project.service.UserService;
@@ -222,7 +222,8 @@ public class InterfaceInfoController {
         }
         // 2.判断该接口是否可以调用
         // 创建一个User对象(这里先模拟一下，搞个假数据)
-        com.yupi.apiclientsdk.model.User user = new com.yupi.apiclientsdk.model.User();
+        //com.yupi.apiclientsdk.model.User user = new com.yupi.apiclientsdk.model.User();
+        com.yupi.apiclientsdk.model.User user= new com.yupi.apiclientsdk.model.User();
         // 设置user对象的username属性为"test"
         user.setUsername("test");
         // 通过yuApiClient的getUsernameByPost方法传入user对象，并将返回的username赋值给username变量
